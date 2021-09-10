@@ -22,6 +22,58 @@ public class Paddle extends Rectangle{
         g.fillRect(x, y, width, height);
     }
 
+    public void keyPressed(KeyEvent e) {
+        switch(id) {
+            case 1:
+                if(e.getKeyCode()==KeyEvent.VK_Z) {
+                    setYDirection(-speed);
+                }
+                if(e.getKeyCode()==KeyEvent.VK_S) {
+                    setYDirection(speed);
+                }
+                break;
+            case 2:
+                if(e.getKeyCode()==KeyEvent.VK_UP) {
+                    setYDirection(-speed);
+                }
+                if(e.getKeyCode()==KeyEvent.VK_DOWN) {
+                    setYDirection(speed);
+                }
+                break;
+        }
+    }
+    public void keyReleased(KeyEvent e) {
+        switch(id) {
+            case 1:
+                if(e.getKeyCode() == KeyEvent.VK_Z) {
+                    setYDirection(0);
+                }
+                if(e.getKeyCode() == KeyEvent.VK_S) {
+                    setYDirection(0);
+                }
+                break;
+            case 2:
+                if(e.getKeyCode() == KeyEvent.VK_UP) {
+                    setYDirection(0);
+                }
+                if(e.getKeyCode() == KeyEvent.VK_DOWN) {
+                    setYDirection(0);
+                }
+                break;
+        }
+    }
+
+    public void setYDirection(int yDirection) {
+        yVelocity = yDirection;
+    }
+
+    public void move() {
+        y= y + yVelocity;
+    }
+
+
+
+
 
 
 }

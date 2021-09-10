@@ -19,7 +19,7 @@ public class PongPanel extends GamePanel {
         score = new Score(GAME_WIDTH,GAME_HEIGHT);
 
         this.setFocusable(true);
-        this.addKeyListener(new KListenner());
+        this.addKeyListener(new KListener());
         this.setPreferredSize(SCREEN_SIZE);
 
         gameThread = new Thread(this);
@@ -42,12 +42,64 @@ public class PongPanel extends GamePanel {
         g.drawImage(image,0,0,this);
     }
 
-    public void draw(Graphics g) {
+    private void draw(Graphics g) {
         paddle1.draw(g);
         paddle2.draw(g);
+        ball.draw(g);
+    }
+
+    private void move() {
+        paddle1.move();
+        paddle2.move();
+        ball.move();
+        Toolkit.getDefaultToolkit().sync();
     }
 
 
+
+    private void checkCollision() {
+
+        // stop paddles at window edges
+
+        if(paddle1.y<=0)
+            paddle1.y=0;
+        if(paddle1.y >= (GAME_HEIGHT-PADDLE_HEIGHT))
+            paddle1.y = GAME_HEIGHT-PADDLE_HEIGHT;
+        if(paddle2.y<=0)
+            paddle2.y=0;
+        if(paddle2.y >= (GAME_HEIGHT-PADDLE_HEIGHT))
+            paddle2.y = GAME_HEIGHT-PADDLE_HEIGHT;
+
+        // bounce ball off vertical screen limits
+        if(ball.y <=0) {
+            ball.setYDirection(-ball.yVelocity);
+        }
+        if(ball.y >= GAME_HEIGHT-BALL_DIAMETER) {
+            ball.setYDirection(-ball.yVelocity);
+        }
+
+        //bounce ball off paddles
+
+        if(ball.intersects(paddle1)) {
+            ball.xVelocity = Math.abs(ball.xVelocity);
+            if(ball.yVelocity>0)
+                ball.yVelocity++;
+            else
+                ball.yVelocity--;
+            ball.setXDirection(ball.xVelocity);
+            ball.setYDirection(ball.yVelocity);
+        }
+        if(ball.intersects(paddle2)) {
+            ball.xVelocity = Math.abs(ball.xVelocity);
+            if(ball.yVelocity>0)
+                ball.yVelocity++;
+            else
+                ball.yVelocity--;
+            ball.setXDirection(-ball.xVelocity);
+            ball.setYDirection(ball.yVelocity);
+        }
+
+    }
 
 
 
@@ -62,22 +114,22 @@ public class PongPanel extends GamePanel {
             delta += (now -lastTime)/ns;
             lastTime = now;
             if(delta >=1) {
-                //move();
-                //checkCollision();
+                move();
+                checkCollision();
                 repaint();
                 delta--;
             }
         }
     }
 
-    public class KListenner extends KeyAdapter{
+    public class KListener extends KeyAdapter{
         public void keyPressed(KeyEvent e) {
-            //paddle1.keyPressed(e);
-            //paddle2.keyPressed(e);
+            paddle1.keyPressed(e);
+            paddle2.keyPressed(e);
         }
         public void keyReleased(KeyEvent e) {
-            //paddle1.keyReleased(e);
-            //paddle2.keyReleased(e);
+            paddle1.keyReleased(e);
+            paddle2.keyReleased(e);
         }
     }
 
